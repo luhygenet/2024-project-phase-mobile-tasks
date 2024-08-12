@@ -28,12 +28,11 @@ void main() {
       imageUrl: 'assets/shoe2.jpeg',
       price: '6');
 
-
-  test('should return updated product', () async {
+  test('should update product and return updated product', () async {
     when(mockProductRepository.updateProduct(tobeupdatedProduct))
         .thenAnswer((_) async => const Right(updatedProduct));
 
-    final result = await updateProductUseCase.execute(tobeupdatedProduct);
+    final result = await updateProductUseCase(tobeupdatedProduct);
 
     expect(result, const Right(updatedProduct));
   });

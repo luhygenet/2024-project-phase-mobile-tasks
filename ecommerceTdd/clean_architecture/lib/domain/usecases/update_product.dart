@@ -3,13 +3,14 @@ import 'package:clean_architecture/domain/entities/product.dart';
 import 'package:clean_architecture/domain/repositories/product_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class UpdateProductUseCase {
+import 'base_usecase.dart';
+
+class UpdateProductUseCase extends BaseUsecase<ProductEntity, ProductEntity> {
   final ProductRepository productRepository;
 
   UpdateProductUseCase(this.productRepository);
 
-  Future<Either<Failure, ProductEntity>> execute(ProductEntity product) async {
+  Future<Either<Failure, ProductEntity>> call(ProductEntity product) async {
     return await productRepository.updateProduct(product);
   }
-  
 }

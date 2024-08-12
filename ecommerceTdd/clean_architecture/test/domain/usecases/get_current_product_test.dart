@@ -25,12 +25,12 @@ void main() {
 
   const testProductId = '2';
 
-  test('should return specified product', () async {
+  test('should return product with specified id', () async {
     // arrange
     when(mockProductRepository.getCurrentProduct(testProductId))
         .thenAnswer((_) async => const Right(testProductDetail));
     // act
-    final result = await viewProductUsecase.execute(testProductId);
+    final result = await viewProductUsecase(testProductId);
 
     // assert
     expect(result, const Right(testProductDetail));

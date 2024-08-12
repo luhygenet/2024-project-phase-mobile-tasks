@@ -23,12 +23,11 @@ void main() {
     price: '6',
   );
 
-
-  test('should return created product', () async {
+  test('should create a return created product', () async {
     when(mockProductRepository.createProduct(testProduct))
         .thenAnswer((_) async => const Right(testProduct));
 
-    final result = await createProductUseCase.execute(testProduct);
+    final result = await createProductUseCase(testProduct);
 
     expect(result, const Right(testProduct));
   });

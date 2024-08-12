@@ -41,7 +41,7 @@ void main() {
     when(mockProductRepository.getAllProducts())
         .thenAnswer((_) async => const Right(testReturnProducts));
 
-    final result = await viewAllProductsUseCase.execute();
+    final result = await viewAllProductsUseCase(Noparams());
 
     print(testReturnProducts);
     expect(result, const Right(testReturnProducts));

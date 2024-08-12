@@ -1,4 +1,3 @@
-
 import 'package:clean_architecture/domain/usecases/delete_product.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,12 +17,12 @@ void main() {
 
   const testProductId = '2';
 
-  test('should delete specified product', () async {
+  test('should delete product with specified id', () async {
     // arrange
     when(mockProductRepository.deleteProduct(testProductId))
         .thenAnswer((_) async => const Right(null));
     // act
-    final result = await deleteProductUseCase.execute(testProductId);
+    final result = await deleteProductUseCase(testProductId);
 
     // assert
     expect(result, const Right(null));
