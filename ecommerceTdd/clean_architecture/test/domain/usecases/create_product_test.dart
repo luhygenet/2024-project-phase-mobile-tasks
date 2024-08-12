@@ -27,7 +27,7 @@ void main() {
     when(mockProductRepository.createProduct(testProduct))
         .thenAnswer((_) async => const Right(testProduct));
 
-    final result = await createProductUseCase(testProduct);
+    final result = await createProductUseCase(Params(product: testProduct));
 
     expect(result, const Right(testProduct));
   });

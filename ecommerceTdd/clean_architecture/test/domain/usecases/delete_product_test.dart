@@ -22,9 +22,11 @@ void main() {
     when(mockProductRepository.deleteProduct(testProductId))
         .thenAnswer((_) async => const Right(null));
     // act
-    final result = await deleteProductUseCase(testProductId);
+    final result = await deleteProductUseCase(Params(id: testProductId));
 
     // assert
     expect(result, const Right(null));
   });
 }
+
+  

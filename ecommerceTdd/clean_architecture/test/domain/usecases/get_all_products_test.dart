@@ -1,4 +1,5 @@
 import 'package:clean_architecture/domain/entities/product.dart';
+import 'package:clean_architecture/domain/usecases/base_usecase.dart';
 import 'package:clean_architecture/domain/usecases/get_all_products.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,7 +42,7 @@ void main() {
     when(mockProductRepository.getAllProducts())
         .thenAnswer((_) async => const Right(testReturnProducts));
 
-    final result = await viewAllProductsUseCase(Noparams());
+    final result = await viewAllProductsUseCase(NoParams());
 
     print(testReturnProducts);
     expect(result, const Right(testReturnProducts));

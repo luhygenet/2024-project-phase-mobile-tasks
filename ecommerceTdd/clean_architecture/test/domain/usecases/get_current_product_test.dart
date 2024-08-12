@@ -30,7 +30,7 @@ void main() {
     when(mockProductRepository.getCurrentProduct(testProductId))
         .thenAnswer((_) async => const Right(testProductDetail));
     // act
-    final result = await viewProductUsecase(testProductId);
+    final result = await viewProductUsecase(Params(id: testProductId));
 
     // assert
     expect(result, const Right(testProductDetail));
