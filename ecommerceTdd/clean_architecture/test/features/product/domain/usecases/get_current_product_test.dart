@@ -1,11 +1,11 @@
-import 'package:clean_architecture/domain/entities/product.dart';
-import 'package:clean_architecture/domain/usecases/get_current_product.dart';
+import 'package:clean_architecture/features/product/domain/entities/product.dart';
+import 'package:clean_architecture/features/product/domain/usecases/get_current_product.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mockito/mockito.dart';
 
-import '../../helpers/test_helper.mocks.dart';
+import '../../../../helpers/test_helper.mocks.dart';
 
 void main() {
   late ViewProductUsecase viewProductUsecase;

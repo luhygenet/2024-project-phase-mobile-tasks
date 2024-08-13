@@ -1,18 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
-import '../../core/error/failure.dart';
-import '../entities/product.dart';
+import '../../../../core/error/failure.dart';
 import '../repositories/product_repository.dart';
 import 'base_usecase.dart';
 
-class ViewProductUsecase extends BaseUsecase<ProductEntity, Params> {
+class DeleteProductUseCase extends BaseUsecase<void, Params> {
   final ProductRepository productRepository;
 
-  ViewProductUsecase(this.productRepository);
+  DeleteProductUseCase(this.productRepository);
 
-  Future<Either<Failure, ProductEntity>> call(Params params) {
-    return productRepository.getCurrentProduct(params.id);
+  Future<Either<Failure, void>> call(Params params) async {
+    return await productRepository.deleteProduct(params.id);
   }
 }
 

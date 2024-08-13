@@ -8,8 +8,8 @@ import 'dart:convert' as _i8;
 import 'dart:typed_data' as _i10;
 
 import 'package:clean_architecture/core/error/failure.dart' as _i6;
-import 'package:clean_architecture/domain/entities/product.dart' as _i7;
-import 'package:clean_architecture/domain/repositories/product_repository.dart'
+import 'package:clean_architecture/features/product/domain/entities/product.dart' as _i7;
+import 'package:clean_architecture/features/product/domain/repositories/product_repository.dart'
     as _i4;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:http/http.dart' as _i3;
