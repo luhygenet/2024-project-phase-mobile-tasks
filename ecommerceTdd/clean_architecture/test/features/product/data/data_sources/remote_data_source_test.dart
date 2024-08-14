@@ -139,20 +139,20 @@ void main() {
 
   group('update a product', () {
     test('should return an updated product', () async {
-      when(mockHttpClient.put(Uri.parse(Urls.updateProduct(testId))))
+      when(mockHttpClient.put(Uri.parse(Urls.updateProduct(testProduct))))
           .thenAnswer((_) async => http.Response(readJson(jsonFile), 200));
 
-      final result = await productRemoteDataSourceImpl.updateProduct(testId);
+      final result = await productRemoteDataSourceImpl.updateProduct(testProduct);
 
       expect(result, isA<ProductModel>());
     });
     test('should return an updated product', () async {
-      when(mockHttpClient.put(Uri.parse(Urls.updateProduct(testId))))
+      when(mockHttpClient.put(Uri.parse(Urls.updateProduct(testProduct))))
           .thenAnswer((_) async => http.Response(readJson(jsonFile), 400));
 
       
 
-      expect(() => productRemoteDataSourceImpl.updateProduct(testId), throwsA(isA<ServerException>()));
+      expect(() => productRemoteDataSourceImpl.updateProduct(testProduct), throwsA(isA<ServerException>()));
     });
   });
 }

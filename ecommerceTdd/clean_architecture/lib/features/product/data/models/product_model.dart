@@ -17,7 +17,7 @@ class ProductModel extends ProductEntity {
         price: json['price']);
   }
 
-   Map<String, dynamic> tojsn() {
+  Map<String, dynamic> tojsn() {
     return {
       'id': id,
       'name': name,
@@ -26,4 +26,11 @@ class ProductModel extends ProductEntity {
       'price': price
     };
   }
+
+  ProductEntity toEntity() => ProductEntity(
+      id: id,
+      name: name,
+      description: description,
+      imageUrl: imageUrl,
+      price: price);
 }

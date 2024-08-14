@@ -12,7 +12,7 @@ abstract class ProductRemoteDataSource {
   Future<List<ProductModel>> getAllProducts();
   Future<ProductModel> createProduct(ProductEntity product);
   Future<void> deleteProduct(String id);
-  Future<ProductModel> updateProduct(String id);
+  Future<ProductModel> updateProduct(ProductEntity product);
 }
 
 class ProductRemoteDataSourceImpl extends ProductRemoteDataSource {
@@ -68,8 +68,8 @@ class ProductRemoteDataSourceImpl extends ProductRemoteDataSource {
   }
 
   @override
-  Future<ProductModel> updateProduct(String id) async {
-    final response = await client.put(Uri.parse(Urls.updateProduct(id)));
+  Future<ProductModel> updateProduct(ProductEntity product) async {
+    final response = await client.put(Uri.parse(Urls.updateProduct(product)));
     if (response.statusCode == 200) {
       return ProductModel.fromJsn(json.decode(response.body));
     } else {
