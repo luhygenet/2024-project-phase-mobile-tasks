@@ -11,7 +11,7 @@ void main() {
       name: 'modelproduct',
       description: 'niceproduct',
       imageUrl: 'imageUrl',
-      price: '10');
+      price: 10);
 
   test('should be a subclass of product model', () async {
     expect(testproductModel, isA<ProductEntity>());
@@ -20,12 +20,12 @@ void main() {
   test('should return a valid model json', () async {
     //arrange
 
-    final Map<String, dynamic> jsonData =
+    final Map<String, dynamic> jsonData=
         json.decode(readJson('dummy_product_response.json'));
 
     //act
 
-    final result = ProductModel.fromJsn(jsonData);
+    final result = ProductModel.fromJsn(jsonData['data']);
 
     //assert
 
@@ -40,7 +40,7 @@ void main() {
       'name': 'modelproduct',
       'description': 'niceproduct',
       'imageUrl': 'imageUrl',
-      'price': '10'
+      'price': 10
     };
 
     //act

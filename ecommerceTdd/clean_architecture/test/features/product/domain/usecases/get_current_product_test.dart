@@ -21,7 +21,7 @@ void main() {
       name: 'first product',
       description: 'this is my first product',
       imageUrl: 'assets/shoe2.jpeg',
-      price: '6');
+      price: 6);
 
   const testProductId = '2';
 

@@ -1,5 +1,4 @@
-
-
+import 'dart:convert';
 import 'package:clean_architecture/core/constants/constants.dart';
 import 'package:clean_architecture/core/error/exception.dart';
 import 'package:clean_architecture/features/product/data/data_sources/remote_data_source.dart';
@@ -31,29 +30,52 @@ void main() {
     id: '3',
     name: 'prod',
     imageUrl: 'imag',
-    price: '10',
+    price: 10,
   );
+  print(json.decode(readJson(jsonFile)));
+  final testmodel =
+      ProductModel.fromJsn(json.decode(readJson(jsonFile))["data"]);
+  print(testmodel);
+
+  const base = 'https://g5-flutter-learning-path-be.onrender.com/api/v1';
 
   group('get current product', () {
+    test('''should perform a get method on a url with 
+    given id and with application/json header''', () async {
+      //arrange
+      when(mockHttpClient.get(any, headers: anyNamed('headers')))
+          .thenAnswer((_) async => http.Response(readJson(jsonFile), 200));
+
+      //act
+
+      productRemoteDataSourceImpl.getCurrentProduct(testId);
+
+      //assert
+      verify(mockHttpClient.get(Uri.parse('$base/products/$testId'), headers: {
+        'Content-Type': 'application/json',
+      }));
+    });
     test('should return weather model when response is 200', () async {
       //arrange
-      when(mockHttpClient.get(Uri.parse(Urls.getcurrentProductById(testId))))
+      when(mockHttpClient.get(any, headers: anyNamed('headers')))
           .thenAnswer((_) async => http.Response(readJson(jsonFile), 200));
 
       //act
 
       final result =
           await productRemoteDataSourceImpl.getCurrentProduct(testId);
-
-      //assert
-      expect(result, isA<ProductModel>());
+      print(result);
+      print(testmodel); //assert
+      expect(result, equals(testmodel));
     });
     test(
         'should return a server exception when the status code is 404 or other',
         () async {
       //arrange
-      when(mockHttpClient.get(Uri.parse(Urls.getcurrentProductById(testId))))
-          .thenAnswer((_) async => http.Response('Not Found', 404));
+      when(mockHttpClient
+          .get(Uri.parse(Urls.getcurrentProductById(testId)), headers: {
+        'Content-Type': 'application/json',
+      })).thenAnswer((_) async => http.Response('Not Found', 404));
 
       //act
 
@@ -65,6 +87,7 @@ void main() {
 
   group('Get all products', () {
     test('should return all products when response is 200', () async {
+      print("sami");
       //arrange
       when(mockHttpClient.get(Uri.parse(Urls.getAllproducts())))
           .thenAnswer((_) async => http.Response(readJson(jsonsFile), 200));
@@ -107,7 +130,7 @@ void main() {
     test('should return a server exception when the response is not not 201',
         () async {
       //arrange
-      when(mockHttpClient.post(Uri.parse(Urls.createProduct())))
+      when(mockHttpClient.post(Uri.parse('https://numbersapi.com')))
           .thenAnswer((_) async => http.Response('Could not create', 404));
 
       //assert
@@ -121,7 +144,7 @@ void main() {
 
   group('delete a product', () {
     test('should delete a product and return null', () async {
-      when(mockHttpClient.delete(Uri.parse(Urls.deleteProduct(testId))))
+      when(mockHttpClient.delete(Uri.parse('https://numbersapi.com/$testId')))
           .thenAnswer((_) async => http.Response('no content', 204));
 
       await productRemoteDataSourceImpl.deleteProduct(testId);
@@ -129,7 +152,7 @@ void main() {
 
     test('should return a server exception when it can\'t delete a product',
         () async {
-      when(mockHttpClient.delete(Uri.parse(Urls.deleteProduct(testId))))
+      when(mockHttpClient.delete(Uri.parse('https://numbersapi.com/$testId')))
           .thenAnswer((_) async => http.Response('no content', 203));
 
       expect(() => productRemoteDataSourceImpl.deleteProduct(testId),
@@ -139,20 +162,22 @@ void main() {
 
   group('update a product', () {
     test('should return an updated product', () async {
-      when(mockHttpClient.put(Uri.parse(Urls.updateProduct(testProduct))))
+      when(mockHttpClient
+              .put(Uri.parse(Urls.updateProduct(testProduct))))
           .thenAnswer((_) async => http.Response(readJson(jsonFile), 200));
 
-      final result = await productRemoteDataSourceImpl.updateProduct(testProduct);
+      final result =
+          await productRemoteDataSourceImpl.updateProduct(testProduct);
 
       expect(result, isA<ProductModel>());
     });
-    test('should return an updated product', () async {
-      when(mockHttpClient.put(Uri.parse(Urls.updateProduct(testProduct))))
+    test('should throw a server exception', () async {
+      when(mockHttpClient
+              .put(Uri.parse(Urls.updateProduct(testProduct))))
           .thenAnswer((_) async => http.Response(readJson(jsonFile), 400));
 
-      
-
-      expect(() => productRemoteDataSourceImpl.updateProduct(testProduct), throwsA(isA<ServerException>()));
+      expect(() => productRemoteDataSourceImpl.updateProduct(testProduct),
+          throwsA(isA<ServerException>()));
     });
   });
 }

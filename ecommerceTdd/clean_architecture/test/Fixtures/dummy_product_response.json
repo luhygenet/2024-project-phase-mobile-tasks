@@ -1,8 +1,9 @@
 {
-    "id": "1",
+    "data" : {
+        "id": "1",
     "name": "modelproduct",
     "description": "niceproduct",
     "imageUrl": "imageUrl",
-    "price": "10"
+    "price": 10}
 }
 

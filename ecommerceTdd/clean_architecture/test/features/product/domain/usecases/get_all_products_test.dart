@@ -22,20 +22,20 @@ void main() {
         name: 'first product',
         description: 'this is my first product',
         imageUrl: 'assets/shoe2.jpeg',
-        price: '6'),
+        price: 6),
     ProductEntity(
       id: '3',
       name: 'second product',
       description: 'this is my second product',
       imageUrl: 'assets/shoe2.jpeg',
-      price: '7',
+      price: 7,
     ),
     ProductEntity(
         id: '4',
         name: 'third product',
         description: 'this is my third product',
         imageUrl: 'assets/shoe2.jpeg',
-        price: '6'),
+        price: 6),
   ];
 
   test('should return all products', () async {

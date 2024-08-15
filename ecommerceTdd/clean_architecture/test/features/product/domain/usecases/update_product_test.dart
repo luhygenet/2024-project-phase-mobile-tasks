@@ -19,14 +19,14 @@ void main() {
       name: 'first product',
       description: 'this is my first product',
       imageUrl: 'assets/shoe2.jpeg',
-      price: '6');
+      price: 6);
 
   const updatedProduct = ProductEntity(
       id: '2',
       name: 'first product',
       description: 'this is my first product',
       imageUrl: 'assets/shoe2.jpeg',
-      price: '6');
+      price: 6);
 
   test('should update product and return updated product', () async {
     when(mockProductRepository.updateProduct(tobeupdatedProduct))

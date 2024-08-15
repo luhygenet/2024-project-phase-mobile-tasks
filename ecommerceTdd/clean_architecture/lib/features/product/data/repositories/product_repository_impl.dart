@@ -2,16 +2,23 @@ import 'dart:ffi';
 
 import '../../../../core/error/exception.dart';
 import '../../../../core/error/failure.dart';
+import '../../../../core/network/network_info.dart';
 import '../../domain/entities/product.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../domain/repositories/product_repository.dart';
+import '../data_sources/local_data_source.dart';
 import '../data_sources/remote_data_source.dart';
 
 class ProductRepositoryImpl extends ProductRepository {
   final ProductRemoteDataSource productRemoteDataSource;
+  final ProductLocalDataSource productLocalDataSource;
+  final NetworkInfo networkInfo;
 
-  ProductRepositoryImpl({required this.productRemoteDataSource});
+  ProductRepositoryImpl(
+      {required this.productLocalDataSource,
+      required this.networkInfo,
+      required this.productRemoteDataSource});
 
   @override
   Future<Either<Failure, ProductEntity>> createProduct(
@@ -55,13 +62,29 @@ class ProductRepositoryImpl extends ProductRepository {
 
   @override
   Future<Either<Failure, ProductEntity>> getCurrentProduct(String id) async {
-    try {
-      final result = await productRemoteDataSource.getCurrentProduct(id);
-      return Right(result.toEntity());
-    } on ServerException {
-      return const Left(ServerFailure('an error with the server'));
-    } on SocketException {
-      return const Left(SocketFailure('an error with the socket'));
+    networkInfo.isConnected;
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await productRemoteDataSource.getCurrentProduct(id);
+        productLocalDataSource.cacheProduct(result);
+        print('exi');
+        return Right(result.toEntity());
+      } on ServerException {
+        return const Left(ServerFailure('an error with the server'));
+      } on SocketException {
+        return const Left(SocketFailure('an error with the socket'));
+      }
+    } else {
+      try {
+        final localTrivia = await productLocalDataSource.getLastProduct();
+        return Right(localTrivia.toEntity());
+      } on CacheException {
+        return Left(CacheFailure('no cache found'));
+      } on ServerException {
+        return const Left(ServerFailure('server error occurred'));
+      } on SocketException {
+        return const Left(SocketFailure('socket failure'));
+      }
     }
   }
 

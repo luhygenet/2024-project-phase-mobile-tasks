@@ -20,7 +20,7 @@ void main() {
     name: 'first product',
     description: 'this is my first product',
     imageUrl: 'assets/shoe2.jpeg',
-    price: '6',
+    price: 6,
   );
 
   test('should create a return created product', () async {
