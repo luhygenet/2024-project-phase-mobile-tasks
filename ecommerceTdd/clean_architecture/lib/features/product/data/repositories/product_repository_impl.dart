@@ -39,45 +39,36 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<Either<Failure, void>> deleteProduct(String id) async {
     try {
       await productRemoteDataSource.deleteProduct(id);
-      return const Right(Void);
+      return Right(Void);
     } on ServerException {
       return const Left(ServerFailure('error in deleting due to server'));
     } on SocketException {
       return const Left(SocketFailure('socket Failure'));
+    } on NotFoundException catch (e) {
+      print(e.message);
+      print("ezi");
+      return Left(NotFoundFailure('not found'));
     }
   }
 
   @override
   Future<Either<Failure, List<ProductEntity>>> getAllProducts() async {
-    try {
-      final result = await productRemoteDataSource.getAllProducts();
-      final resultEntities = result.map((model) => model.toEntity()).toList();
-      return Right(resultEntities);
-    } on ServerException {
-      return const Left(ServerFailure('error in deleting due to server'));
-    } on SocketException {
-      return const Left(SocketFailure('socket Failure'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, ProductEntity>> getCurrentProduct(String id) async {
-    networkInfo.isConnected;
     if (await networkInfo.isConnected) {
       try {
-        final result = await productRemoteDataSource.getCurrentProduct(id);
-        productLocalDataSource.cacheProduct(result);
-        print('exi');
-        return Right(result.toEntity());
+        final result = await productRemoteDataSource.getAllProducts();
+        final resultEntities = result.map((model) => model.toEntity()).toList();
+        return Right(resultEntities);
       } on ServerException {
-        return const Left(ServerFailure('an error with the server'));
+        return const Left(ServerFailure('error in deleting due to server'));
       } on SocketException {
-        return const Left(SocketFailure('an error with the socket'));
+        return const Left(SocketFailure('socket Failure'));
       }
     } else {
       try {
-        final localTrivia = await productLocalDataSource.getLastProduct();
-        return Right(localTrivia.toEntity());
+        final localTrivia = await productLocalDataSource.getAllLastProduct();
+        final localTrivias =
+            localTrivia.map((model) => model.toEntity()).toList();
+        return Right(localTrivias);
       } on CacheException {
         return Left(CacheFailure('no cache found'));
       } on ServerException {
@@ -88,6 +79,36 @@ class ProductRepositoryImpl extends ProductRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, ProductEntity>> getCurrentProduct(String id) async {
+    networkInfo.isConnected;
+    if (await networkInfo.isConnected) {
+      try {
+        final result = await productRemoteDataSource.getCurrentProduct(id);
+        productLocalDataSource.cacheAllProduct(result);
+        print('exi');
+        return Right(result.toEntity());
+      } on ServerException {
+        return const Left(ServerFailure('an error with the server'));
+      } on SocketException {
+        return const Left(SocketFailure('an error with the socket'));
+      }
+    } else {
+      try {
+        final localTrivia = await productLocalDataSource.getAllLastProduct();
+        final localTrivias =
+            localTrivia.map((model) => model.toEntity()).toList();
+        return Right(localTrivias[1]);
+      } on CacheException {
+        return Left(CacheFailure('no cache found'));
+      } on ServerException {
+        return const Left(ServerFailure('server error occurred'));
+      } on SocketException {
+        return const Left(SocketFailure('socket failure'));
+      }
+    }
+  }
+  
   @override
   Future<Either<Failure, ProductEntity>> updateProduct(
       ProductEntity product) async {

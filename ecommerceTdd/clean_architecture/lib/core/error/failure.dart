@@ -36,3 +36,8 @@ class CacheFailure extends Failure{
 
 
 }
+
+class NotFoundFailure extends Failure{
+  NotFoundFailure(super.message);
+  
+}

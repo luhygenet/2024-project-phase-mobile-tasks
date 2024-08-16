@@ -10,11 +10,14 @@ class ProductModel extends ProductEntity {
 
   factory ProductModel.fromJsn(Map<String, dynamic> json) {
     return ProductModel(
-        id: json['id'],
-        name: json['name'],
-        description: json['description'],
-        imageUrl: json['imageUrl'],
-        price: json['price']);
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      imageUrl: json['imageUrl'],
+      price: json['price'] is double
+          ? (json['price'] as double).toInt()
+          : json['price'],
+    );
   }
 
   Map<String, dynamic> tojsn() {

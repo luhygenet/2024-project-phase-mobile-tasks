@@ -34,10 +34,30 @@ void main() {
       description: 'niceproduct',
       imageUrl: 'imageUrl',
       price: 10);
+  final testProductmodels = [
+    ProductModel(
+        id: '1',
+        name: 'modelproduct',
+        description: 'niceproduct',
+        imageUrl: 'imageUrl',
+        price: 10),
+    ProductModel(
+        id: '1',
+        name: 'modelproduct',
+        description: 'niceproduct',
+        imageUrl: 'imageUrl',
+        price: 10),
+    ProductModel(
+        id: '1',
+        name: 'modelproduct',
+        description: 'niceproduct',
+        imageUrl: 'imageUrl',
+        price: 10),
+  ];
 
   //final ProductEntity tProduct = testProductmodel;
 
-  const testProductEntity =  ProductEntity(
+  const testProductEntity = ProductEntity(
       id: '1',
       name: 'modelproduct',
       description: 'niceproduct',
@@ -62,85 +82,25 @@ void main() {
       body();
     });
   }
-
-  group( 'group', () => runTestOnline(() {
-    test('returns current data when call to api is successful', () async {
-      //arrange
-      when(mockProductRemoteDataSource.getCurrentProduct(testId))
-          .thenAnswer((_) async => testProductmodel);
-
-      //act
-      final result = await productRepositoryImpl.getCurrentProduct(testId);
-
-      //assert
-      verify(mockProductRemoteDataSource.getCurrentProduct(testId));
-      expect(result, equals(Right(testProductEntity)));
-    });
-
-    test('returns server error when the call to api is unsuccessful', () async {
-      //arrange
-      when(mockProductRemoteDataSource.getCurrentProduct(testId))
-          .thenThrow(ServerException());
-
-      //act
-      final result = await productRepositoryImpl.getCurrentProduct(testId);
-
-      //assert
-      verify(mockProductRemoteDataSource.getCurrentProduct(testId));
-      verifyZeroInteractions(mockProductLocalDataSource);
-      expect(result, equals(const Left(ServerFailure('server failure'))));
-    });
-
-    test('returns connection error when there\'s no internet', () async {
-      //arrange
-      when(mockProductRemoteDataSource.getCurrentProduct(testId))
-          .thenThrow(SocketException());
-
-      //act
-      final result = await productRepositoryImpl.getCurrentProduct(testId);
-
-      //assert
-
-      expect(
-          result, equals(const Left(SocketFailure('no internet connection'))));
-    });
-
-    test(
-        'should cache the data locally when the call to the remote data source is successful',
-        () async {
-      //arrange
-      print('ezi');
-      when(mockProductRemoteDataSource.getCurrentProduct(testId))
-          .thenAnswer((_) async => testProductmodel);
-
-      //act
-      await productRepositoryImpl.getCurrentProduct(testId);
-
-      //assert
-
-      verify(mockProductRemoteDataSource.getCurrentProduct(testId));
-      verify(mockProductLocalDataSource.cacheProduct(testProductmodel));
-    });
-  })
-);
-  runTestOffline(() {
+  
+  group('groupoffline', () => runTestOffline(() {
     test('should return last locally cached data if it is present', () async {
       //arrange
-      when(mockProductLocalDataSource.getLastProduct())
-          .thenAnswer((_) async => testProductmodel);
+      when(mockProductLocalDataSource.getAllLastProduct())
+          .thenAnswer((_) async => testProductmodels);
 
       //act
       final result = await productRepositoryImpl.getCurrentProduct(testId);
 
       //assert
       verifyZeroInteractions(mockProductRemoteDataSource);
-      verify(mockProductLocalDataSource.getLastProduct());
+      verify(mockProductLocalDataSource.getAllLastProduct());
       expect(result, equals(Right(testProductEntity)));
     });
 
     test('should return cache failure if no cached data is present', () async {
       //arrange
-      when(mockProductLocalDataSource.getLastProduct())
+      when(mockProductLocalDataSource.getAllLastProduct())
           .thenThrow(CacheException());
 
       //act
@@ -148,85 +108,44 @@ void main() {
 
       //assert
       verifyZeroInteractions(mockProductRemoteDataSource);
-      verify(mockProductLocalDataSource.getLastProduct());
+      verify(mockProductLocalDataSource.getAllLastProduct());
       expect(result, equals(Left(CacheFailure('no cache was found'))));
     });
 
     test('returns server error when the call to api is unsuccessful', () async {
       //arrange
-      when(mockProductLocalDataSource.getLastProduct())
+      when(mockProductLocalDataSource.getAllLastProduct())
           .thenThrow(ServerException());
 
       //act
       final result = await productRepositoryImpl.getCurrentProduct(testId);
 
       //assert
-      verify(mockProductLocalDataSource.getLastProduct());
+      verify(mockProductLocalDataSource.getAllLastProduct());
       verifyZeroInteractions(mockProductRemoteDataSource);
       expect(result, equals(const Left(ServerFailure('server failure'))));
     });
 
     test('returns connection error when there\'s no internet', () async {
       //arrange
-      when(mockProductLocalDataSource.getLastProduct())
+      when(mockProductLocalDataSource.getAllLastProduct())
           .thenThrow(SocketException());
 
       //act
       final result = await productRepositoryImpl.getCurrentProduct(testId);
 
       //assert
-      verify(mockProductLocalDataSource.getLastProduct());
+      verify(mockProductLocalDataSource.getAllLastProduct());
       verifyZeroInteractions(mockProductRemoteDataSource);
       expect(
           result, equals(const Left(SocketFailure('no internet connection'))));
     });
-  });
-
-  runTestOnline(() {
-    test('returns current data when call to api is successful', () async {
-      //arrange
-      when(mockProductRemoteDataSource.createProduct(testProductEntity))
-          .thenAnswer((_) async => testProductmodel);
-
-      //act
-      final result =
-          await productRepositoryImpl.createProduct(testProductEntity);
-
-      //assert
-
-      expect(result, equals(Right(testProductEntity)));
-    });
-
-    test('returns server error when the call to api is unsuccessful', () async {
-      //arrange
-      when(mockProductRemoteDataSource.getCurrentProduct(testId))
-          .thenThrow(ServerException());
-
-      //act
-      final result = await productRepositoryImpl.getCurrentProduct(testId);
-
-      //assert
-
-      expect(result, equals(const Left(ServerFailure('server failure'))));
-    });
-
-    test('returns connection error when there\'s no internet', () async {
-      //arrange
-      when(mockProductRemoteDataSource.getCurrentProduct(testId))
-          .thenThrow(SocketException());
-
-      //act
-      final result = await productRepositoryImpl.getCurrentProduct(testId);
-
-      //assert
-
-      expect(
-          result, equals(const Left(SocketFailure('no internet connection'))));
-    });
-  });
-
-  runTestOnline(() {
-    final testReturnProducts = [
+  
+  }));
+  group(
+      'group',
+      () => runTestOnline(() {
+        final testReturnProducts = [
       ProductModel(
           id: '2',
           name: 'first product',
@@ -308,7 +227,117 @@ void main() {
       expect(
           result, equals(const Left(SocketFailure('no internet connection'))));
     });
+            test('returns current data when call to api is successful',
+                () async {
+              //arrange
+              when(mockProductRemoteDataSource.getCurrentProduct(testId))
+                  .thenAnswer((_) async => testProductmodel);
+
+              //act
+              final result =
+                  await productRepositoryImpl.getCurrentProduct(testId);
+
+              //assert
+              verify(mockProductRemoteDataSource.getCurrentProduct(testId));
+              expect(result, equals(Right(testProductEntity)));
+            });
+
+            test('returns server error when the call to api is unsuccessful',
+                () async {
+              //arrange
+              when(mockProductRemoteDataSource.getCurrentProduct(testId))
+                  .thenThrow(ServerException());
+
+              //act
+              final result =
+                  await productRepositoryImpl.getCurrentProduct(testId);
+
+              //assert
+              verify(mockProductRemoteDataSource.getCurrentProduct(testId));
+              verifyZeroInteractions(mockProductLocalDataSource);
+              expect(
+                  result, equals(const Left(ServerFailure('server failure'))));
+            });
+
+            test('returns connection error when there\'s no internet',
+                () async {
+              //arrange
+              when(mockProductRemoteDataSource.getCurrentProduct(testId))
+                  .thenThrow(SocketException());
+
+              //act
+              final result =
+                  await productRepositoryImpl.getCurrentProduct(testId);
+
+              //assert
+
+              expect(result,
+                  equals(const Left(SocketFailure('no internet connection'))));
+            });
+
+            test(
+                'should cache the data locally when the call to the remote data source is successful',
+                () async {
+              //arrange
+              print('ezi');
+              when(mockProductRemoteDataSource.getCurrentProduct(testId))
+                  .thenAnswer((_) async => testProductmodel);
+
+              //act
+              await productRepositoryImpl.getCurrentProduct(testId);
+
+              //assert
+
+              verify(mockProductRemoteDataSource.getCurrentProduct(testId));
+              verify(
+                  mockProductLocalDataSource.cacheAllProduct(testProductmodel));
+            });
+          }));
+
+  runTestOnline(() {
+    test('returns current data when call to api is successful', () async {
+      //arrange
+      when(mockProductRemoteDataSource.createProduct(testProductEntity))
+          .thenAnswer((_) async => testProductmodel);
+
+      //act
+      final result =
+          await productRepositoryImpl.createProduct(testProductEntity);
+
+      //assert
+
+      expect(result, equals(Right(testProductEntity)));
+    });
+
+    test('returns server error when the call to api is unsuccessful', () async {
+      //arrange
+      when(mockProductRemoteDataSource.getCurrentProduct(testId))
+          .thenThrow(ServerException());
+
+      //act
+      final result = await productRepositoryImpl.getCurrentProduct(testId);
+
+      //assert
+
+      expect(result, equals(const Left(ServerFailure('server failure'))));
+    });
+
+    test('returns connection error when there\'s no internet', () async {
+      //arrange
+      when(mockProductRemoteDataSource.getCurrentProduct(testId))
+          .thenThrow(SocketException());
+
+      //act
+      final result = await productRepositoryImpl.getCurrentProduct(testId);
+
+      //assert
+
+      expect(
+          result, equals(const Left(SocketFailure('no internet connection'))));
+    });
   });
+
+  
 
   group('update current product', () {
     test('updates current data when call to api is successful', () async {

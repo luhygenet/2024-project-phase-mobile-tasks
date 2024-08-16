@@ -29,14 +29,11 @@ void main() {
     description: 'des',
     id: '3',
     name: 'prod',
-    imageUrl: 'imag',
+    imageUrl: '/Users/dell/Desktop/che.jpg',
     price: 10,
   );
-  print(json.decode(readJson(jsonFile)));
   final testmodel =
-      ProductModel.fromJsn(json.decode(readJson(jsonFile))["data"]);
-  print(testmodel);
-
+      ProductModel.fromJsn(json.decode(readJson(jsonFile))['data']);
   const base = 'https://g5-flutter-learning-path-be.onrender.com/api/v1';
 
   group('get current product', () {
@@ -64,8 +61,7 @@ void main() {
 
       final result =
           await productRemoteDataSourceImpl.getCurrentProduct(testId);
-      print(result);
-      print(testmodel); //assert
+      //assert
       expect(result, equals(testmodel));
     });
     test(
@@ -87,7 +83,6 @@ void main() {
 
   group('Get all products', () {
     test('should return all products when response is 200', () async {
-      print("sami");
       //arrange
       when(mockHttpClient.get(Uri.parse(Urls.getAllproducts())))
           .thenAnswer((_) async => http.Response(readJson(jsonsFile), 200));
@@ -130,11 +125,12 @@ void main() {
     test('should return a server exception when the response is not not 201',
         () async {
       //arrange
-      when(mockHttpClient.post(Uri.parse('https://numbersapi.com')))
-          .thenAnswer((_) async => http.Response('Could not create', 404));
-
-      //assert
-
+      final response = http.Response('Could not create', 404);
+      when(mockHttpClient.send(any))
+          .thenAnswer((_) async => http.StreamedResponse(
+                Stream.fromIterable([response.bodyBytes]),
+                response.statusCode,
+              ));
       //act
 
       expect(() => productRemoteDataSourceImpl.createProduct(testProduct),
@@ -144,15 +140,15 @@ void main() {
 
   group('delete a product', () {
     test('should delete a product and return null', () async {
-      when(mockHttpClient.delete(Uri.parse('https://numbersapi.com/$testId')))
-          .thenAnswer((_) async => http.Response('no content', 204));
+      when(mockHttpClient.delete(Uri.parse(Urls.deleteProduct(testId))))
+          .thenAnswer((_) async => http.Response('no content', 200));
 
       await productRemoteDataSourceImpl.deleteProduct(testId);
     });
 
     test('should return a server exception when it can\'t delete a product',
         () async {
-      when(mockHttpClient.delete(Uri.parse('https://numbersapi.com/$testId')))
+      when(mockHttpClient.delete(Uri.parse(Urls.deleteProduct(testId))))
           .thenAnswer((_) async => http.Response('no content', 203));
 
       expect(() => productRemoteDataSourceImpl.deleteProduct(testId),
@@ -163,8 +159,15 @@ void main() {
   group('update a product', () {
     test('should return an updated product', () async {
       when(mockHttpClient
-              .put(Uri.parse(Urls.updateProduct(testProduct))))
-          .thenAnswer((_) async => http.Response(readJson(jsonFile), 200));
+          .put(Uri.parse(Urls.updateProduct(testProduct)), headers: {
+        'Content-Type': 'application/json',
+      }, body: jsonEncode({
+        'name': testProduct.name,
+        'description': testProduct.description,
+        'price': testProduct.price
+      })
+      )
+      ).thenAnswer((_) async => http.Response(readJson(jsonFile), 200));
 
       final result =
           await productRemoteDataSourceImpl.updateProduct(testProduct);
@@ -173,8 +176,13 @@ void main() {
     });
     test('should throw a server exception', () async {
       when(mockHttpClient
-              .put(Uri.parse(Urls.updateProduct(testProduct))))
-          .thenAnswer((_) async => http.Response(readJson(jsonFile), 400));
+          .put(Uri.parse(Urls.updateProduct(testProduct)), headers: {
+        'Content-Type': 'application/json',
+      }, body: jsonEncode({
+        'name': testProduct.name,
+        'description': testProduct.description,
+        'price': testProduct.price
+      }))).thenAnswer((_) async => http.Response(readJson(jsonFile), 400));
 
       expect(() => productRemoteDataSourceImpl.updateProduct(testProduct),
           throwsA(isA<ServerException>()));
