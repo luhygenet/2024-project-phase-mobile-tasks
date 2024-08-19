@@ -1,32 +1,4 @@
-import 'package:flutter/material.dart';
 
-import '../screens/Search.dart';
-import '../screens/Update.dart';
-import '../screens/details.dart';
-import '../screens/home_page.dart';
-
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomePage(),
-        '/details': (context) => const ProductDetailsPage(),
-        '/update': (context) => const Update(),
-        '/search': (context) => const Search()
-      },
-    );
-  }
-}
 
 
 

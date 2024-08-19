@@ -1,34 +1,31 @@
-import 'package:http/http.dart';
+import 'package:flutter/material.dart';
 
-import 'features/product/data/data_sources/remote_data_source.dart';
-import 'features/product/domain/entities/product.dart';
-// import 'package:bloc/bloc.dart';
+import './features/product/presentation/screens/Search.dart';
+import './features/product/presentation/screens/Update.dart';
+import './features/product/presentation/screens/details.dart';
+import './features/product/presentation/screens/home_page.dart';
+
+import 'injection_container.dart' as di;
 
 void main() async {
-  late ProductRemoteDataSourceImpl productRemoteDataSourceImpl;
+  await di.init(); 
+  runApp(const MyApp());
+}
 
-  productRemoteDataSourceImpl = ProductRemoteDataSourceImpl(client: Client());
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
-  // getting all the products
-  // final result = await productRemoteDataSourceImpl.getAllProducts();
-  // print(result);
-  // for (final product in result) {
-  //   print(product.name);
-  // }
-
-  //deleting a product
-  // await productRemoteDataSourceImpl.deleteProduct('66bdfad79bbe07fc3903515b');
-
-  //getting a specific product
-  // final product = await productRemoteDataSourceImpl
-  //     .getCurrentProduct('66be01739bbe07fc39035201');
-
-  //updating or creating a product just edit the method
-  const product = ProductEntity(
-      id: '66bf21aa3b4ddf8b56f355c8',
-      name: 'newest product',
-      description: 'home ',
-      imageUrl: '/Users/dell/Desktop/che.jpg',
-      price: 6889);
-  await productRemoteDataSourceImpl.updateProduct(product);
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomePage(),
+        '/details': (context) => const ProductDetailsPage(),
+        '/update': (context) => const Update(),
+        '/search': (context) => const Search()
+      },
+    );
+  }
 }
