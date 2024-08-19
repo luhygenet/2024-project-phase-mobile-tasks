@@ -1,11 +1,11 @@
 import 'dart:ffi';
 
+import 'package:dartz/dartz.dart';
+
 import '../../../../core/error/exception.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/network/network_info.dart';
 import '../../domain/entities/product.dart';
-import 'package:dartz/dartz.dart';
-
 import '../../domain/repositories/product_repository.dart';
 import '../data_sources/local_data_source.dart';
 import '../data_sources/remote_data_source.dart';
@@ -39,15 +39,15 @@ class ProductRepositoryImpl extends ProductRepository {
   Future<Either<Failure, void>> deleteProduct(String id) async {
     try {
       await productRemoteDataSource.deleteProduct(id);
-      return Right(Void);
+      return const Right(Void);
     } on ServerException {
       return const Left(ServerFailure('error in deleting due to server'));
     } on SocketException {
       return const Left(SocketFailure('socket Failure'));
     } on NotFoundException catch (e) {
-      print(e.message);
-      print("ezi");
-      return Left(NotFoundFailure('not found'));
+      // ignore: avoid_print
+      print(e);
+      return const Left(NotFoundFailure('not found '));
     }
   }
 
@@ -70,7 +70,7 @@ class ProductRepositoryImpl extends ProductRepository {
             localTrivia.map((model) => model.toEntity()).toList();
         return Right(localTrivias);
       } on CacheException {
-        return Left(CacheFailure('no cache found'));
+        return const Left(CacheFailure('no cache found'));
       } on ServerException {
         return const Left(ServerFailure('server error occurred'));
       } on SocketException {
@@ -86,7 +86,7 @@ class ProductRepositoryImpl extends ProductRepository {
       try {
         final result = await productRemoteDataSource.getCurrentProduct(id);
         productLocalDataSource.cacheAllProduct(result);
-        print('exi');
+
         return Right(result.toEntity());
       } on ServerException {
         return const Left(ServerFailure('an error with the server'));
@@ -100,7 +100,7 @@ class ProductRepositoryImpl extends ProductRepository {
             localTrivia.map((model) => model.toEntity()).toList();
         return Right(localTrivias[1]);
       } on CacheException {
-        return Left(CacheFailure('no cache found'));
+        return const Left(CacheFailure('no cache found'));
       } on ServerException {
         return const Left(ServerFailure('server error occurred'));
       } on SocketException {
@@ -108,7 +108,7 @@ class ProductRepositoryImpl extends ProductRepository {
       }
     }
   }
-  
+
   @override
   Future<Either<Failure, ProductEntity>> updateProduct(
       ProductEntity product) async {

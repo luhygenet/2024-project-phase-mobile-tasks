@@ -49,7 +49,7 @@ class ProductRemoteDataSourceImpl extends ProductRemoteDataSource {
   }
 
   @override
- Future<ProductModel> createProduct(ProductEntity product) async {
+  Future<ProductModel> createProduct(ProductEntity product) async {
     var request = http.MultipartRequest(
       'POST',
       Uri.parse(Urls.createProduct()),
@@ -67,7 +67,9 @@ class ProductRemoteDataSourceImpl extends ProductRemoteDataSource {
 
     var streamedResponse = await client.send(request);
     final response = await http.Response.fromStream(streamedResponse);
-
+    print(response);
+    print(response.body);
+    print(response.statusCode);
     if (response.statusCode == 201) {
       print(response.statusCode);
       final body = response.body;
@@ -76,7 +78,6 @@ class ProductRemoteDataSourceImpl extends ProductRemoteDataSource {
       throw ServerException();
     }
   }
- 
 
   @override
   Future<void> deleteProduct(String id) async {
@@ -106,5 +107,4 @@ class ProductRemoteDataSourceImpl extends ProductRemoteDataSource {
       throw ServerException();
     }
   }
-
 }

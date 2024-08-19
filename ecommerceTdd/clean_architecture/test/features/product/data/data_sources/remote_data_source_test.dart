@@ -20,7 +20,18 @@ void main() {
     productRemoteDataSourceImpl =
         ProductRemoteDataSourceImpl(client: mockHttpClient);
   });
-
+  var streamedResponse = http.StreamedResponse(
+      Stream.fromIterable([utf8.encode(json.encode({
+        'data': {
+          'id': '1',
+          'name': 'Test Product',
+          'description': 'A test product',
+          'imageUrl': 'imageUrl',
+          'price': 99.99
+        }
+      }))]),
+      201,
+    );
   const testId = '2';
   const jsonFile = '/dummy_product_response.json';
   const jsonsFile = '/dummy_products.json';
@@ -111,8 +122,8 @@ void main() {
   group('Create a product', () {
     test('should return the created product when status code is 201', () async {
       //arrange
-      when(mockHttpClient.post(Uri.parse(Urls.createProduct())))
-          .thenAnswer((_) async => http.Response(readJson(jsonFile), 201));
+      when(mockHttpClient.send(any))
+          .thenAnswer((_) async => streamedResponse);
 
       //assert
       final result =

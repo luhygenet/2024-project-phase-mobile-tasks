@@ -1,5 +1,5 @@
 import 'package:clean_architecture/features/product/domain/entities/product.dart';
-import 'package:clean_architecture/features/product/domain/usecases/base_usecase.dart';
+import 'package:clean_architecture/core/Base_Usecase/base_usecase.dart';
 import 'package:clean_architecture/features/product/domain/usecases/get_all_products.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';

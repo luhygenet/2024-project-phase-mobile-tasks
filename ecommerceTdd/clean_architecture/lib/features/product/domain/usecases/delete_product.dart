@@ -3,23 +3,23 @@ import 'package:equatable/equatable.dart';
 
 import '../../../../core/error/failure.dart';
 import '../repositories/product_repository.dart';
-import 'base_usecase.dart';
+import '../../../../core/Base_Usecase/base_usecase.dart';
 
-class DeleteProductUseCase extends BaseUsecase<void, Params> {
+class DeleteProductUseCase extends BaseUsecase<void, DeleteParams> {
   final ProductRepository productRepository;
 
   DeleteProductUseCase(this.productRepository);
 
-  Future<Either<Failure, void>> call(Params params) async {
+  Future<Either<Failure, void>> call(DeleteParams params) async {
     return await productRepository.deleteProduct(params.id);
   }
 }
 
-class Params extends Equatable {
+class DeleteParams extends Equatable {
   final String id;
 
-  Params({required this.id});
+  const DeleteParams({required this.id});
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [id];
 }

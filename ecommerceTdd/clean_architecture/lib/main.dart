@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 
 import 'features/product/data/data_sources/remote_data_source.dart';
 import 'features/product/domain/entities/product.dart';
+// import 'package:bloc/bloc.dart';
 
 void main() async {
   late ProductRemoteDataSourceImpl productRemoteDataSourceImpl;
@@ -27,8 +28,7 @@ void main() async {
       id: '66bf21aa3b4ddf8b56f355c8',
       name: 'newest product',
       description: 'home ',
-      imageUrl:
-          '/Users/dell/Desktop/che.jpg',
+      imageUrl: '/Users/dell/Desktop/che.jpg',
       price: 6889);
   await productRemoteDataSourceImpl.updateProduct(product);
 }

@@ -32,7 +32,7 @@ void main() {
     when(mockProductRepository.updateProduct(tobeupdatedProduct))
         .thenAnswer((_) async => const Right(updatedProduct));
 
-    final result = await updateProductUseCase(Params(productEntity: updatedProduct));
+    final result = await updateProductUseCase(const UpdateParams(product: updatedProduct));
 
     expect(result, const Right(updatedProduct));
   });

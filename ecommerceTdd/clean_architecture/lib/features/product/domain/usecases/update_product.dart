@@ -4,23 +4,25 @@ import 'package:clean_architecture/features/product/domain/repositories/product_
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
-import 'base_usecase.dart';
+import '../../../../core/Base_Usecase/base_usecase.dart';
 
-class UpdateProductUseCase extends BaseUsecase<ProductEntity, Params> {
+class UpdateProductUseCase extends BaseUsecase<ProductEntity, UpdateParams> {
   final ProductRepository productRepository;
 
   UpdateProductUseCase(this.productRepository);
-
-  Future<Either<Failure, ProductEntity>> call(Params params) async {
-    return await productRepository.updateProduct(params.productEntity);
+  
+  @override
+  Future<Either<Failure, ProductEntity>> call(UpdateParams params) async {
+    return await productRepository.updateProduct(params.product);
   }
 }
 
-class Params extends Equatable {
-  final ProductEntity productEntity;
+class UpdateParams extends Equatable {
+  final ProductEntity product;
 
-  Params({required this.productEntity});
+  const UpdateParams({required this.product});
+
 
   @override
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [product];
 }
