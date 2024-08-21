@@ -70,7 +70,7 @@ class ProductRepositoryImpl extends ProductRepository {
             localTrivia.map((model) => model.toEntity()).toList();
         return Right(localTrivias);
       } on CacheException {
-        return const Left(CacheFailure('no cache found'));
+        return const Left(CacheFailure('no cache found in gettingproducts'));
       } on ServerException {
         return const Left(ServerFailure('server error occurred'));
       } on SocketException {
@@ -100,7 +100,7 @@ class ProductRepositoryImpl extends ProductRepository {
             localTrivia.map((model) => model.toEntity()).toList();
         return Right(localTrivias[1]);
       } on CacheException {
-        return const Left(CacheFailure('no cache found'));
+        return const Left(CacheFailure('no cache found ewidqwieudhqkw'));
       } on ServerException {
         return const Left(ServerFailure('server error occurred'));
       } on SocketException {

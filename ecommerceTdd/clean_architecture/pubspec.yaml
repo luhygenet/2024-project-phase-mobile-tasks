@@ -45,6 +45,7 @@ dependencies:
   shared_preferences:
   http_parser: ^4.0.2
   bloc: ^8.1.4
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:

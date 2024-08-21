@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../domain/entities/product.dart';
-import '../../presentation/mock_data.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/product_bloc.dart';
+import '../bloc/product_event.dart';
+import '../bloc/product_state.dart';
 import '../widgets/product_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,6 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    context.read<ProductBloc>().add(LoadAllProductsEvent());
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
@@ -107,24 +110,36 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            Expanded(
-                child: ListView.builder(
-                    itemCount: mockData.length,
-                    itemBuilder: (BuildContext content, int index) {
-                      return ProductCard(
-                        mockData[index]
-                      );
-                    }))
+            BlocBuilder<ProductBloc, ProductState>(
+              builder: (context, state) {
+                print(state);
+                if (state is LoadingAllProduct) {
+                  return CircularProgressIndicator();
+                } else if (state is LoadedAllProducts) {
+                  return Expanded(
+                      child: ListView.separated(
+                          itemCount: state.products.length,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return const SizedBox(height: 10);
+                          },
+                          itemBuilder: (BuildContext content, int index) {
+                            return ProductCard(state.products[index]);
+                          }));
+                } else if (state is LoadingAllProductsError) {
+                  return Center(child: Text(state.message));
+                } else {
+                  print(state);
+                  return Center(child: Text('No products'));
+                }
+              },
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final product =
-              await Navigator.pushNamed(context, '/update') as ProductEntity;
-          setState(() {
-            mockData.add(product);
-          });
+          Navigator.pushNamed(context, '/add');
+          //context.read<ProductBloc>().add(LoadAllProductsEvent());
         },
         backgroundColor: const Color.fromARGB(255, 16, 114, 194),
         shape: const RoundedRectangleBorder(

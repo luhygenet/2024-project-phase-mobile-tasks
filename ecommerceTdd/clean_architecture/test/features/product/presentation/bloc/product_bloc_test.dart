@@ -239,7 +239,7 @@ void main() {
           .thenAnswer((_) async => const Right(testProductDetail));
       return productBloc;
     },
-    act: (bloc) => bloc.add(const CreateProductEvent(testProductDetail)),
+    act: (bloc) => bloc.add(const CreateProductEvent(product:  testProductDetail)),
     wait: const Duration(milliseconds: 500),
     expect: () =>
         [const CreatingProduct(), const CreatedProduct(testProductDetail)],
@@ -256,7 +256,7 @@ void main() {
               ServerFailure('Server failure in creating the product')));
       return productBloc;
     },
-    act: (bloc) => bloc.add(const CreateProductEvent(testProductDetail)),
+    act: (bloc) => bloc.add(const CreateProductEvent(product:  testProductDetail)),
     wait: const Duration(milliseconds: 500),
     expect: () => [
       const CreatingProduct(),
@@ -274,7 +274,7 @@ void main() {
               SocketFailure('Socket failure in creating the product')));
       return productBloc;
     },
-    act: (bloc) => bloc.add(const CreateProductEvent(testProductDetail)),
+    act: (bloc) => bloc.add(const CreateProductEvent(product:  testProductDetail)),
     wait: const Duration(milliseconds: 500),
     expect: () => [
       const CreatingProduct(),

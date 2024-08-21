@@ -10,6 +10,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(productEntity.imageUrl);
     return InkWell(
       splashColor: Colors.blue,
       onTap: () {
@@ -24,8 +25,8 @@ class ProductCard extends StatelessWidget {
           children: <Widget>[
             AspectRatio(
               aspectRatio: 18.0 / 11.0,
-              child: Image.asset(
-                'assets/boot.jpg',
+              child: Image.network(
+                productEntity.imageUrl,
                 fit: BoxFit.fitWidth,
               ),
             ),

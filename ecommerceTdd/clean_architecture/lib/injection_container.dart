@@ -8,11 +8,15 @@ import 'features/product/data/data_sources/local_data_source.dart';
 import 'features/product/data/data_sources/remote_data_source.dart';
 import 'features/product/data/repositories/product_repository_impl.dart';
 import 'features/product/domain/repositories/product_repository.dart';
+import 'features/product/domain/usecases/create_product.dart';
+import 'features/product/domain/usecases/delete_product.dart';
+import 'features/product/domain/usecases/get_all_products.dart';
 import 'features/product/domain/usecases/get_current_product.dart';
+import 'features/product/domain/usecases/update_product.dart';
 import 'features/product/presentation/bloc/product_bloc.dart';
 
 final sl = GetIt.instance;
-Future <void> init() async {
+Future<void> init() async {
   //! features - product
   // Bloc
 
@@ -25,15 +29,17 @@ Future <void> init() async {
 
   // UseCases
   sl.registerLazySingleton(() => ViewProductUsecase(sl()));
-  sl.registerLazySingleton(() => ViewProductUsecase(sl()));
-  sl.registerLazySingleton(() => ViewProductUsecase(sl()));
-  sl.registerLazySingleton(() => ViewProductUsecase(sl()));
+  sl.registerLazySingleton(() => ViewAllProductsUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateProductUseCase(sl()));
+  sl.registerLazySingleton(() => CreateProductUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteProductUseCase(sl()));
 
   //Repository
   sl.registerLazySingleton<ProductRepository>(() => ProductRepositoryImpl(
-      productLocalDataSource: sl(),
-      networkInfo: sl(),
-      productRemoteDataSource: sl()));
+        productRemoteDataSource: sl(),
+        productLocalDataSource: sl(),
+        networkInfo: sl(),
+      ));
 
   // Data sources
   sl.registerLazySingleton<ProductLocalDataSource>(
@@ -51,7 +57,6 @@ Future <void> init() async {
 
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => http.Client);
-  sl.registerLazySingleton(() =>InternetConnectionChecker());
+  sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton(() => InternetConnectionChecker());
 }
-

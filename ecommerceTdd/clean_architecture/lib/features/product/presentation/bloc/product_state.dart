@@ -15,9 +15,9 @@ class IntialState extends ProductState {}
 class ProductLoading extends ProductState {}
 
 class LoadedSingleProductState extends ProductState {
-  final ProductEntity result;
+  final ProductEntity product;
 
-  const LoadedSingleProductState(this.result);
+  const LoadedSingleProductState(this.product);
 }
 
 class ProductLoadError extends ProductState {

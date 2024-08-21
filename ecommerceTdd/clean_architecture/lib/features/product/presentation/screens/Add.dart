@@ -12,14 +12,14 @@ import '../bloc/product_state.dart';
 //   runApp(Add());
 // }
 
-class Update extends StatefulWidget {
-  const Update({super.key});
+class Add extends StatefulWidget {
+  const Add({super.key});
 
   @override
-  State<Update> createState() => _UpdateState();
+  State<Add> createState() => _AddState();
 }
 
-class _UpdateState extends State<Update> {
+class _AddState extends State<Add> {
   TextEditingController _name = TextEditingController();
   TextEditingController _category = TextEditingController();
   TextEditingController _price = TextEditingController();
@@ -41,37 +41,6 @@ class _UpdateState extends State<Update> {
 
   @override
   Widget build(BuildContext context) {
-    final String productId =
-        ModalRoute.of(context)!.settings.arguments as String;
-
-    Future<void> _showMyDialog() async {
-      return showDialog<void>(
-        context: context,
-        barrierDismissible: false, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('AlertDialog Title'),
-            content: const SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text('This is a demo alert dialog.'),
-                  Text('Would you like to approve of this message?'),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Approve'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    }
-
     return Scaffold(
       appBar: AppBar(
           leading: IconButton(
@@ -85,23 +54,22 @@ class _UpdateState extends State<Update> {
                 width: 70,
               ),
               Text(
-                'Update product',
+                'Add product',
               )
             ],
           )),
       body: BlocListener<ProductBloc, ProductState>(
         listener: (context, state) {
-          if (state is UpdatedProduct) {
+          if (state is CreatedProduct) {
             ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Product updated successfully!')));
-
-            context.read<ProductBloc>().add(GetSingleProductEvent(productId));
+                const SnackBar(content: Text('Product created successfully!')));
+            context.read<ProductBloc>().add(LoadAllProductsEvent());
             Navigator.pop(context);
           }
-          if (state is UpdateProductError) {
+          if (state is CreateProductError) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(
-                    'couldn\'t update product successfuly ${state.message}')));
+                    'couldn\'t create product successfuly ${state.message}')));
           }
         },
         child: SingleChildScrollView(
@@ -110,13 +78,7 @@ class _UpdateState extends State<Update> {
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (context) => const AlertDialog(
-                              content: Text('You cant update the image '),
-                            ));
-                  },
+                  onTap: _pickImage,
                   child: Container(
                     height: 200,
                     decoration: const BoxDecoration(
@@ -154,15 +116,15 @@ class _UpdateState extends State<Update> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     CustomButton(
-                        text: 'UPDATE',
+                        text: 'ADD',
                         onPressed: () {
                           print('press');
-                          context.read<ProductBloc>().add(UpdateProductEvent(
-                              ProductEntity(
-                                  id: productId,
+                          context.read<ProductBloc>().add(CreateProductEvent(
+                              product: ProductEntity(
+                                  id: '',
                                   name: _name.text,
                                   description: _description.text,
-                                  imageUrl: '',
+                                  imageUrl: _image!.path,
                                   price: int.parse(_price.text))));
                         },
                         bC: Colors.white,
@@ -170,6 +132,11 @@ class _UpdateState extends State<Update> {
                     const SizedBox(
                       height: 5,
                     ),
+                    CustomButton(
+                        text: 'DELETE',
+                        onPressed: () {},
+                        bC: const Color.fromARGB(255, 189, 22, 10),
+                        col: Colors.white)
                   ],
                 )
               ],
@@ -323,7 +290,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 50,
-        width: 1000,
+        width: 500,
         decoration: BoxDecoration(
             color: col,
             border: Border.all(color: bC),

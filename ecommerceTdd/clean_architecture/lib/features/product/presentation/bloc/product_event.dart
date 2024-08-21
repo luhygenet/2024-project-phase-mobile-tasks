@@ -37,7 +37,7 @@ class UpdateProductEvent extends ProductEvent {
 
 class CreateProductEvent extends ProductEvent {
   final ProductEntity product;
-  const CreateProductEvent(this.product);
+  const CreateProductEvent({ required this.product});
 
   @override
   List<Object?> get props => [product];

@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import './features/product/presentation/screens/Search.dart';
-import './features/product/presentation/screens/Update.dart';
+import 'features/product/presentation/screens/Add.dart';
 import './features/product/presentation/screens/details.dart';
 import './features/product/presentation/screens/home_page.dart';
 
+import 'features/product/presentation/bloc/product_bloc.dart';
+import 'features/product/presentation/screens/Update.dart';
 import 'injection_container.dart' as di;
+import 'injection_container.dart';
+import 'package:http/http.dart' as http;
 
 void main() async {
-  await di.init(); 
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
+  di.sl<http.Client>();
   runApp(const MyApp());
 }
 
@@ -17,15 +24,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: {
-        '/': (context) => const HomePage(),
-        '/details': (context) => const ProductDetailsPage(),
-        '/update': (context) => const Update(),
-        '/search': (context) => const Search()
-      },
-    );
+    return BlocProvider(
+        create: (context) => ProductBloc(
+            viewProductUsecase: sl(),
+            viewAllProductsUseCase: sl(),
+            updateProductUseCase: sl(),
+            createProductUseCase: sl(),
+            deleteProductUseCase: sl()),
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          initialRoute: '/',
+          routes: {
+            '/': (context) => const HomePage(),
+            '/details': (context) => const ProductDetailsPage(),
+            '/add': (context) => const Add(),
+            '/search': (context) => const Search(),
+            '/update': (context) => const Update(),
+          },
+        ));
   }
 }
